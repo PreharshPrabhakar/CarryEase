@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Passenger Dashboard - CarryEase</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body,
+    html {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(-45deg, #3b82f6, #9333ea, #3b82f6, #6b7280);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      padding-top: 70px;
+    }
+
+    @keyframes gradientBG {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Navbar Styles */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 30px;
+      z-index: 1000;
+    }
+
+    .navbar-logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .navbar-logo::before {
+      content: '🚂';
+      font-size: 2rem;
+    }
+
+    .navbar-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .user-name {
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .user-name::before {
+      content: '🙋';
+      font-size: 1.2rem;
+    }
+
+    .logout-btn {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid white;
+      padding: 8px 20px;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      background: white;
+      color: #2563eb;
+    }
+
+    /* Container and Card Styles */
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 1px 1px;
+    }
+
+
+    .dashboard-header,
+    .booking-section,
+    .bookings-list-container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      margin-bottom: 30px;
+    }
+
+    /* Booking Form Styles */
+    .dashboard-header h1 {
+      color: #1e40af;
+      margin-bottom: 10px;
+    }
+
+    .dashboard-header p {
+      color: #6b7280;
+    }
+
+    .booking-section h2 {
+      color: #1e40af;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+
+    .booking-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      color: #374151;
+      font-weight: 600;
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+    }
+
+    .form-group input,
+    .form-group select {
+      padding: 12px;
+      border: 2px solid #858585;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .bag-type-section {
+      grid-column: 1 / -1;
+      padding: 20px;
+      background: rgba(243, 244, 246, 0.8);
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+
+    .bag-type-section h3 {
+      color: #1e40af;
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+    }
+
+    .bag-types {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .bag-type-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bag-type-item input[type="number"] {
+      width: 80px;
+      padding: 8px;
+      border: 2px solid #858585;
+      border-radius: 6px;
+    }
+
+    .bag-type-item label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.95rem;
+      color: #4b5563;
+    }
+
+    .price-tag {
+      color: #059669;
+      font-weight: 600;
+    }
+
+    .service-options {
+      grid-column: 1 / -1;
+      padding: 20px;
+      background: rgba(243, 244, 246, 0.8);
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+
+    .service-options h3 {
+      color: #1e40af;
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      background: white;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .radio-option:hover {
+      border-color: #2563eb;
+      background: #eff6ff;
+    }
+
+    .radio-option input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .radio-option label {
+      cursor: pointer;
+      font-size: 1rem;
+      color: #374151;
+      flex: 1;
+    }
+
+    .price-estimate {
+      grid-column: 1 / -1;
+      background: #2563eb40;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .price-estimate h3 {
+      color: #1e40af;
+      font-size: 1.3rem;
+      margin-bottom: 5px;
+    }
+
+    .price-estimate p {
+      color: #1e3a8a;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    .book-btn {
+      grid-column: 1 / -1;
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .book-btn:hover {
+      background: #1e40af;
+    }
+
+    /* Horizontal Booking List */
+    .bookings-list-container h2 {
+      color: #374151;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+
+    #bookings-list {
+      display: flex;
+      overflow-x: auto;
+      gap: 20px;
+      padding: 10px;
+      scrollbar-width: thin;
+      scrollbar-color: #2563eb #e5e7eb;
+    }
+
+    #bookings-list::-webkit-scrollbar {
+      height: 10px;
+    }
+
+    #bookings-list::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    #bookings-list::-webkit-scrollbar-thumb {
+      background: #2563eb;
+      border-radius: 10px;
+    }
+
+    .booking-item {
+      flex: 0 0 320px;
+      background: #2563eb40;
+      border: 2px solid #ffffff;
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .booking-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(37, 99, 235, 0.15);
+      border-color: #2563eb;
+    }
+
+    .booking-item p {
+      margin: 8px 0;
+    }
+
+    .booking-item strong {
+      color: #1e40af;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    /* Porter Info, Complete Button, and Rating */
+    .porter-info {
+      background: #e0e7ff;
+      border: 1px solid #c7d2fe;
+      border-radius: 8px;
+      padding: 10px 15px;
+      margin-top: 15px;
+    }
+
+    .complete-btn {
+      width: 100%;
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: auto;
+      /* Pushes button to the bottom */
+    }
+
+    .complete-btn:hover {
+      background: #059669;
+    }
+
+    .rating-section {
+      margin-top: 15px;
+    }
+
+    .rating-section>p {
+      font-weight: 600;
+      color: #1e40af;
+      margin-bottom: 5px;
+    }
+
+    .rating-stars {
+      direction: rtl;
+      display: inline-block;
+    }
+
+    .rating-stars span {
+      font-size: 2rem;
+      color: #d1d5db;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .rating-stars:hover span,
+    .rating-stars span:hover,
+    .rating-stars span:hover~span {
+      color: #f59e0b;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-accepted,
+    .status-in-progress {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .status-completed {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .delete-btn {
+    background-color: #ef4444; /* Red color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+    align-self: flex-end; /* Aligns button to the right */
+}
+
+.delete-btn:hover {
+    background-color: #dc2626; /* Darker red on hover */
+}
+
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <div class="navbar-logo">CarryEase</div>
+    <div class="navbar-right">
+      <span class="user-name" id="user-name">Loading...</span>
+      <button class="logout-btn" id="logout-btn">Logout</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="dashboard-header">
+      <h1>Welcome to Your Dashboard</h1>
+      <p>Book a porter with detailed travel information</p>
+    </div>
+
+    <div class="booking-section">
+      <h2>Book a Porter</h2>
+      <form class="booking-form" id="booking-form">
+        <div class="form-group"><label for="passenger-name">Passenger Name *</label><input type="text"
+            id="passenger-name" placeholder="Enter your name" required></div>
+        <div class="form-group"><label for="passenger-phone">Phone Number *</label><input type="tel"
+            id="passenger-phone" placeholder="10-digit mobile number" required></div>
+        <div class="form-group"><label for="pnr-number">PNR Number *</label><input type="text" id="pnr-number"
+            placeholder="10-digit PNR" required maxlength="10"></div>
+        <div class="form-group"><label for="train-number">Train Number *</label><input type="text" id="train-number"
+            placeholder="e.g., 12345" required></div>
+        <div class="form-group"><label for="platform-number">Platform Number *</label><input type="text"
+            id="platform-number" placeholder="e.g., Platform 5" required></div>
+        <div class="form-group"><label for="coach-number">Coach Number *</label><input type="text" id="coach-number"
+            placeholder="e.g., B3" required></div>
+        <div class="bag-type-section">
+          <h3>Select Your Luggage Types</h3>
+          <div class="bag-types">
+            <div class="bag-type-item"><input type="number" id="trolley-bags" min="0" value="0"><label>🧳 Trolley Bag
+                <span class="price-tag" id="trolley-price-tag">(₹60 each)</span></label></div>
+            <div class="bag-type-item"><input type="number" id="suitcase-bags" min="0" value="0"><label>💼 Suitcase
+                <span class="price-tag" id="suitcase-price-tag">(₹50 each)</span></label></div>
+            <div class="bag-type-item"><input type="number" id="backpack-bags" min="0" value="0"><label>🎒 Backpack
+                <span class="price-tag" id="backpack-price-tag">(₹30 each)</span></label></div>
+            <div class="bag-type-item"><input type="number" id="handbag-bags" min="0" value="0"><label>👜 Handbag <span
+                  class="price-tag" id="handbag-price-tag">(₹20 each)</span></label></div>
+            <div class="bag-type-item"><input type="number" id="carton-bags" min="0" value="0"><label>📦 Carton/Box
+                <span class="price-tag" id="carton-price-tag">(₹40 each)</span></label></div>
+          </div>
+        </div>
+        <div class="service-options">
+          <h3>Porter Service Type</h3>
+          <div class="radio-group">
+            <div class="radio-option"><input type="radio" id="platform-pickup" name="service-type" value="platform"
+                checked><label for="platform-pickup"><strong>Platform Pickup</strong> - Porter will pick up luggage from the platform</label></div>
+            <div class="radio-option"><input type="radio" id="train-pickup" name="service-type" value="train"><label
+                for="train-pickup"><strong>Inside Train Pickup (+₹20)</strong> - Porter will come inside the train to pick up your luggage</label></div>
+          </div>
+        </div>
+        <div class="price-estimate">
+          <h3>Estimated Price</h3>
+          <p id="price-display">₹0</p>
+        </div>
+        <button type="submit" class="book-btn" id="book-porter-btn">Confirm Booking</button>
+      </form>
+    </div>
+
+    <div class="bookings-list-container">
+      <h2>My Bookings</h2>
+      <div id="bookings-list">
+        <!-- Booking cards are dynamically inserted here -->
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="passenger.js"></script>
+</body>
+
+</html>

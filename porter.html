@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Porter Dashboard - CarryEase</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body,
+    html {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(-45deg, #1e40af, #3b82f6, #6b7280, #9333ea);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      padding-top: 70px;
+    }
+
+    @keyframes gradientBG {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Navbar Styles */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 70px;
+      background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 30px;
+      z-index: 1000;
+    }
+
+    .navbar-logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .navbar-logo::before {
+      content: '🛠️';
+      font-size: 2rem;
+    }
+
+    .navbar-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .user-name {
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .logout-btn {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid white;
+      padding: 8px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+    }
+
+    /* Main Container and Section Styles */
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 1px 1px;
+    }
+
+    .dashboard-section {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+    }
+
+    .dashboard-section h2,
+    .dashboard-section h3 {
+      color: #374151;
+      margin-bottom: 20px;
+    }
+
+    .dashboard-section h2 {
+      font-size: 1.8rem;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 10px;
+    }
+
+    /* Profile Section Styles */
+    .profile-form {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .profile-form input {
+      padding: 10px;
+      border: 2px solid #858585;
+      border-radius: 8px;
+      font-size: 1rem;
+      flex-grow: 1;
+    }
+
+    #save-phone-btn {
+      background: #16a34a;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Summary Stats Styles */
+    .summary-stats {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .summary-stats>div {
+      background: #f3f4f6;
+      padding: 20px;
+      border-radius: 12px;
+      flex: 1;
+    }
+
+    .summary-stats h3 {
+      color: #1e40af;
+      margin-bottom: 5px;
+    }
+
+    .summary-stats p {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    /* --- UPDATED JOB CARD STYLES --- */
+    .jobs-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .job-card {
+      background: #2563eb40;
+      border: 2px solid #ffffff;
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      /* Smooth transition for all properties */
+    }
+
+    .job-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(37, 99, 235, 0.15);
+      border-color: #2563eb;
+      /* Blue border on hover */
+    }
+
+
+    .job-card p {
+      margin: 6px 0;
+      color: #4b5563;
+    }
+
+    .job-card strong {
+      color: #1e40af;
+    }
+
+    .accept-btn {
+      width: 100%;
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    /* Job Rating Styles */
+    .job-rating {
+      font-size: 1.2rem;
+      color: #f59e0b;
+      text-align: right;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <div class="navbar-logo">CarryEase</div>
+    <div class="navbar-right">
+      <span class="user-name" id="user-name">Loading...</span>
+      <button class="logout-btn" id="logout-btn">Logout</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <section class="dashboard-section">
+      <h2>My Profile</h2>
+      <div class="profile-form">
+        <label for="porter-phone">Contact Number:</label>
+        <input type="tel" id="porter-phone" placeholder="Enter your 10-digit phone number">
+        <button id="save-phone-btn">Save</button>
+      </div>
+    </section>
+
+    <section class="dashboard-section">
+      <h2>Available Jobs</h2>
+      <div id="available-jobs-list" class="jobs-list"></div>
+    </section>
+
+    <section class="dashboard-section">
+      <h2>My Active Jobs</h2>
+      <div id="active-jobs-list" class="jobs-list"></div>
+    </section>
+
+    <section class="dashboard-section">
+      <h2>Performance Summary</h2>
+      <div class="summary-stats">
+        <div>
+          <h3>Jobs Completed</h3>
+          <p id="jobs-completed-count">0</p>
+        </div>
+        <div>
+          <h3>Total Earnings</h3>
+          <p id="total-earnings">₹0</p>
+        </div>
+      </div>
+      <h3>Completed Jobs History</h3>
+      <div id="completed-jobs-list" class="jobs-list"></div>
+    </section>
+  </div>
+
+  <script type="module" src="porter.js"></script>
+</body>
+
+</html>

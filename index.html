@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CarryEase - Authentication</title>
+  <style>
+    /* Base styles */
+    body,
+    html {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      position: relative;
+      background: linear-gradient(-45deg, #3b82f6, #9333ea, #3b82f6, #6b7280);
+      background-size: 400% 400%;
+      animation: gradientBG 5s ease infinite;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      /* justify-content: center; */
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    @keyframes gradientBG {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Main Content Wrapper */
+    .main-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeInDown 0.8s ease;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo {
+      width: 90px;
+      height: 90px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      margin: 0 auto 25px;
+    }
+
+    .logo svg {
+      width: 50px;
+      height: 50px;
+    }
+
+    .hero-section h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: white;
+      margin: 0 0 15px 0;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+      letter-spacing: 1px;
+    }
+
+    .hero-section .tagline {
+      font-size: 1.4rem;
+      color: white;
+      font-weight: 600;
+      margin: 0 0 10px 0;
+      text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero-section .description {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.95);
+      font-weight: 350;
+      /* max-width: 600px;
+      margin: 0 auto; */
+      line-height: 1.6;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Auth Container */
+    .auth-container {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      width: 400px;
+      max-width: 100%;
+      padding: 30px 30px;
+      backdrop-filter: saturate(180%) blur(10px);
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      animation: fadeInUp 0.8s ease;
+      margin-bottom: 50px;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .form-toggle {
+      display: flex;
+      justify-content: space-evenly;
+      margin-bottom: 30px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .form-toggle button {
+      background: none;
+      border-radius: 35px;
+      padding: 10px 66px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #6b7280;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .form-toggle button.active {
+      color: #2563eb;
+      border-color: #2563eb;
+    }
+
+    form {
+      text-align: left;
+      display: none;
+      flex-direction: column;
+    }
+
+    form.active {
+      display: flex;
+    }
+
+    label {
+      font-size: 1rem;
+      color: #2563eb;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    input {
+      width: 93%;
+      padding: 12px;
+      margin-bottom: 15px;
+      color: #6e6e6e;
+      border: 2px solid #9ca3af;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    select {
+      width: 100.5%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 2px solid #9ca3af;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    button.submit-btn {
+      background: #2563eb;
+      color: white;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 0;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    button.submit-btn:hover {
+      background: #1e40af;
+    }
+
+    .administration-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 50px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+
+    .administration-toggle:hover {
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    .approval-msg,
+    .error {
+      color: #dc2626;
+      font-size: 0.875rem;
+      text-align: center;
+      margin-top: 6px;
+      margin-bottom: -4px;
+      min-height: 20px;
+    }
+
+    /* Password Toggle */
+    .password-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .password-wrapper input {
+      padding-right: 12px;
+    }
+
+    .eye-toggle {
+      position: absolute;
+      top: -6px;
+      right: 0;
+      height: 100%;
+      width: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .eye-toggle svg {
+      width: 20px;
+      height: 20px;
+      stroke: #9ca3af;
+      transition: stroke 0.3s ease;
+    }
+
+    .eye-toggle:hover svg {
+      stroke: #374151;
+    }
+
+    /* Features Section */
+    .features-section {
+      width: 100%;
+      max-width: 1200px;
+      margin-top: 20px;
+      animation: fadeInUp 1s ease 0.3s both;
+    }
+
+    .features-heading {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 40px;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
+      gap: 20px;
+      padding: 0px 0px 20px 0px;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      padding: 30px 25px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      animation: slideInUp 0.6s ease forwards;
+      opacity: 0;
+    }
+
+    .feature-card:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .feature-card:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .feature-card:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    .feature-card:nth-child(4) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .feature-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #2563eb, #1e40af);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 2rem;
+    }
+
+    .feature-card h3 {
+      color: #1e40af;
+      font-size: 1.3rem;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .feature-card p {
+      color: #4b5563;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .hero-section h1 {
+        font-size: 2.5rem;
+      }
+
+      .hero-section .tagline {
+        font-size: 1.1rem;
+      }
+
+      .hero-section .description {
+        font-size: 1rem;
+      }
+
+      .logo {
+        width: 70px;
+        height: 70px;
+      }
+
+      .logo svg {
+        width: 40px;
+        height: 40px;
+      }
+
+      .features-heading {
+        font-size: 2rem;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <button class="administration-toggle" id="toggleViewBtn">Administration</button>
+
+  <div class="main-wrapper">
+    <!-- Hero Section -->
+    <div class="hero-section">
+      <div class="logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+          <rect x="18" y="22" width="28" height="30" rx="2" stroke="white" stroke-width="3"
+            fill="rgba(255,255,255,0.2)" />
+          <rect x="22" y="26" width="20" height="4" rx="1" fill="white" />
+          <rect x="22" y="34" width="20" height="4" rx="1" fill="white" />
+          <rect x="22" y="42" width="20" height="4" rx="1" fill="white" />
+          <line x1="32" y1="16" x2="32" y2="22" stroke="white" stroke-width="3" stroke-linecap="round" />
+          <circle cx="32" cy="1414" r="2" fill="white" />
+          <line x1="18" y1="52" x2="18" y2="58" stroke="white" stroke-width="3" stroke-linecap="round" />
+          <line x1="46" y1="52" x2="46" y2="58" stroke="white" stroke-width="3" stroke-linecap="round" />
+          <circle cx="18" cy="60" r="2" fill="white" />
+          <circle cx="46" cy="60" r="2" fill="white" />
+        </svg>
+      </div>
+      <h1>CarryEase</h1>
+      <p class="tagline">Smart Porter Management System</p>
+      <p class="description">Book porters in advance with transparent pricing. No more haggling, no more delays.</p>
+    </div>
+
+    <!-- Auth Container -->
+    <div class="auth-container" id="userAuthContainer">
+      <div class="form-toggle"><button id="signInBtn" class="active">Sign In</button><button id="signUpBtn">Sign
+          Up</button></div>
+
+      <form id="signInForm" class="active">
+        <label for="signinEmail">Email</label>
+        <input type="email" id="signinEmail" required>
+        <label for="signinPassword">Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="signinPassword" required>
+          <span class="eye-toggle" data-input="signinPassword"></span>
+        </div>
+        <div class="error" id="signinError"></div>
+        <button type="submit" class="submit-btn">Sign In</button>
+      </form>
+
+      <form id="signUpForm">
+        <label for="signupName">Full Name</label>
+        <input type="text" id="signupName" required>
+        <label for="signupEmail">Email</label>
+        <input type="email" id="signupEmail" required>
+        <label for="signupPassword">Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="signupPassword" required>
+          <span class="eye-toggle" data-input="signupPassword"></span>
+        </div>
+        <label for="signupRole">I am a...</label>
+        <select id="signupRole">
+          <option value="passenger">Passenger</option>
+          <option value="porter">Porter</option>
+        </select>
+        <div class="error" id="signupError"></div>
+        <button type="submit" class="submit-btn">Create Account</button>
+      </form>
+    </div>
+
+    <!-- Admin Auth Container -->
+    <div class="auth-container" id="adminAuthContainer" style="display:none;">
+      <div class="form-toggle"><button id="adminSignInBtn" class="active">Sign In</button><button
+          id="adminSignUpBtn">Sign Up</button></div>
+
+      <form id="adminSignInForm" class="active">
+        <label for="adminSigninEmail">Admin Email</label>
+        <input type="email" id="adminSigninEmail" required>
+        <label for="adminSigninPassword">Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="adminSigninPassword" required>
+          <span class="eye-toggle" data-input="adminSigninPassword"></span>
+        </div>
+        <div class="error" id="adminSigninError"></div>
+        <button type="submit" class="submit-btn">Sign In</button>
+      </form>
+
+      <form id="adminSignUpForm">
+        <label for="adminSignupName">Full Name</label>
+        <input type="text" id="adminSignupName" required>
+        <label for="adminSignupEmail">Admin Email</label>
+        <input type="email" id="adminSignupEmail" required>
+        <label for="adminSignupPassword">Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="adminSignupPassword" required>
+          <span class="eye-toggle" data-input="adminSignupPassword"></span>
+        </div>
+        <div class="approval-msg" id="adminApprovalMsg"></div>
+        <div class="error" id="adminSignupError"></div>
+        <button type="submit" class="submit-btn">Request Admin Account</button>
+      </form>
+    </div>
+
+    <!-- Features Section -->
+    <div class="features-section">
+      <h2 class="features-heading">Why CarryEase?</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">💰</div>
+          <h3>Transparent Pricing</h3>
+          <p>Fixed rates based on luggage count and weight. No surprises, no haggling.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">📅</div>
+          <h3>Book in Advance</h3>
+          <p>Schedule your porter ahead of time. Avoid last-minute stress at the station.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">📍</div>
+          <h3>Track Status</h3>
+          <p>Real-time updates on your booking status from request to completion.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">✅</div>
+          <h3>Verified Porters</h3>
+          <p>Work with registered porters. Safe, reliable, and professional service.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, db, createUserWithEmailAndPassword, signInWithEmailAndPassword, setDoc, doc, getDoc, onAuthStateChanged } from './app.js';
+
+    const eyeIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+    const eyeOffIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path><line x1="2" x2="22" y1="2" y2="22"></line></svg>`;
+
+    // Function to convert Firebase error codes to user-friendly messages
+    function getErrorMessage(errorCode) {
+      const errorMessages = {
+        'auth/email-already-in-use': 'This email is already registered. Please sign in instead.',
+        'auth/invalid-email': 'Please enter a valid email address.',
+        'auth/operation-not-allowed': 'Operation not allowed. Please contact support.',
+        'auth/weak-password': 'Password should be at least 6 characters.',
+        'auth/user-disabled': 'This account has been disabled.',
+        'auth/user-not-found': 'No account found with this email.',
+        'auth/wrong-password': 'Incorrect password. Please try again.',
+        'auth/invalid-credential': 'Invalid email or password.',
+        'auth/too-many-requests': 'Too many attempts. Please try again later.',
+        'auth/network-request-failed': 'Network error. Please check your connection.',
+        'auth/requires-recent-login': 'Please sign in again to continue.',
+        'auth/invalid-login-credentials': 'Invalid email or password.',
+      };
+
+      return errorMessages[errorCode] || 'An error occurred. Please try again.';
+    }
+
+    document.querySelectorAll('.eye-toggle').forEach(toggle => {
+      toggle.innerHTML = eyeIconSVG;
+      toggle.addEventListener('click', () => {
+        const inputId = toggle.getAttribute('data-input');
+        const passwordInput = document.getElementById(inputId);
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text';
+          toggle.innerHTML = eyeOffIconSVG;
+        } else {
+          passwordInput.type = 'password';
+          toggle.innerHTML = eyeIconSVG;
+        }
+      });
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          if (userData.role === 'admin' && userData.isApproved === false) return;
+          window.location.replace(userData.role + '.html');
+        }
+      }
+    });
+
+    const toggleViewBtn = document.getElementById('toggleViewBtn');
+    const userAuthContainer = document.getElementById('userAuthContainer');
+    const adminAuthContainer = document.getElementById('adminAuthContainer');
+    toggleViewBtn.addEventListener('click', () => {
+      const isUserView = userAuthContainer.style.display !== 'none';
+      userAuthContainer.style.display = isUserView ? 'none' : 'block';
+      adminAuthContainer.style.display = isUserView ? 'block' : 'none';
+      toggleViewBtn.textContent = isUserView ? 'User Portal' : 'Administration';
+    });
+
+    const userSignInBtn = document.getElementById('signInBtn');
+    const userSignUpBtn = document.getElementById('signUpBtn');
+    const signInForm = document.getElementById('signInForm');
+    const signUpForm = document.getElementById('signUpForm');
+    userSignInBtn.addEventListener('click', () => {
+      userSignUpBtn.classList.remove('active');
+      userSignInBtn.classList.add('active');
+      signUpForm.classList.remove('active');
+      signInForm.classList.add('active');
+    });
+    userSignUpBtn.addEventListener('click', () => {
+      userSignInBtn.classList.remove('active');
+      userSignUpBtn.classList.add('active');
+      signInForm.classList.remove('active');
+      signUpForm.classList.add('active');
+    });
+
+    signInForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        await signInWithEmailAndPassword(auth, document.getElementById('signinEmail').value, document.getElementById('signinPassword').value);
+      } catch (error) {
+        document.getElementById('signinError').textContent = getErrorMessage(error.code);
+      }
+    });
+
+    signUpForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, document.getElementById('signupEmail').value, document.getElementById('signupPassword').value);
+        await setDoc(doc(db, 'users', userCredential.user.uid), {
+          name: document.getElementById('signupName').value,
+          email: document.getElementById('signupEmail').value,
+          role: document.getElementById('signupRole').value,
+          isAvailable: document.getElementById('signupRole').value === 'porter'
+        });
+      } catch (error) {
+        document.getElementById('signupError').textContent = getErrorMessage(error.code);
+      }
+    });
+
+    const adminSignInBtn = document.getElementById('adminSignInBtn');
+    const adminSignUpBtn = document.getElementById('adminSignUpBtn');
+    adminSignInBtn.addEventListener('click', () => {
+      adminSignUpBtn.classList.remove('active');
+      adminSignInBtn.classList.add('active');
+      document.getElementById('adminSignUpForm').classList.remove('active');
+      document.getElementById('adminSignInForm').classList.add('active');
+      document.getElementById('adminApprovalMsg').textContent = '';
+    });
+    adminSignUpBtn.addEventListener('click', () => {
+      adminSignInBtn.classList.remove('active');
+      adminSignUpBtn.classList.add('active');
+      document.getElementById('adminSignInForm').classList.remove('active');
+      document.getElementById('adminSignUpForm').classList.add('active');
+      document.getElementById('adminApprovalMsg').textContent = 'Admin accounts require manual approval.';
+    });
+
+    document.getElementById('adminSignInForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        await signInWithEmailAndPassword(auth, document.getElementById('adminSigninEmail').value, document.getElementById('adminSigninPassword').value);
+      } catch (error) {
+        document.getElementById('adminSigninError').textContent = getErrorMessage(error.code);
+      }
+    });
+
+    document.getElementById('adminSignUpForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, document.getElementById('adminSignupEmail').value, document.getElementById('adminSignupPassword').value);
+        await setDoc(doc(db, 'users', userCredential.user.uid), {
+          name: document.getElementById('adminSignupName').value,
+          email: document.getElementById('adminSignupEmail').value,
+          role: 'admin',
+          isApproved: false
+        });
+        document.getElementById('adminApprovalMsg').textContent = 'Account created. Awaiting administrator approval.';
+        document.getElementById('adminSignUpForm').reset();
+      } catch (error) {
+        document.getElementById('adminSignupError').textContent = getErrorMessage(error.code);
+      }
+    });
+  </script>
+
+
+</body>
+
+</html>
