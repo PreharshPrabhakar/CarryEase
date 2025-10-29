@@ -133,6 +133,7 @@ function createJobCard(bookingId, booking, type) {
 
     let cardContent = `
         <p><strong>Passenger:</strong> ${booking.passengerName}</p>
+        <p><strong>Details:</strong> PNR ${booking.pnrNumber}, Train No. ${booking.trainNumber}</p>
         <p><strong>Location:</strong> Platform ${booking.platformNumber}, Coach ${booking.coachNumber}</p>
         <p><strong>Luggage:</strong> ${luggageList || 'None'}</p>
         <p><strong>Fare:</strong> ₹${booking.price}</p>
@@ -166,3 +167,4 @@ function addAcceptJobListeners(user) {
         });
     });
 }
+
